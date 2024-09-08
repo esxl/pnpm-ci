@@ -54,6 +54,36 @@ inputs:
     description: See "version" input documentation at https://github.com/pnpm/action-setup/tree/v4.0.0?tab=readme-ov-file#version
     required: false
 
+  skip-build:
+    default: false
+    description: Boolean to skip `pnpm build`
+    required: false
+
+  skip-format:
+    default: false
+    description: Boolean to skip `pnpm format:check`
+    required: false
+
+  skip-lint:
+    default: false
+    description: Boolean to skip `pnpm lint`
+    required: false
+
+  skip-pack:
+    default: false
+    description: Boolean to skip `pnpm pack`
+    required: false
+
+  skip-test:
+    default: false
+    description: Boolean to skip `pnpm test`
+    required: false
+
+  skip-typecheck:
+    default: false
+    description: Boolean to skip `pnpm typecheck`
+    required: false
+
   token:
     description: See "token" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
     required: false
@@ -89,26 +119,32 @@ runs:
       shell: bash
 
     - name: Check formatting
+      if: inputs.skip-format == false
       run: pnpm run --if-present format:check 
       shell: bash
 
     - name: Lint
+      if: inputs.skip-lint == false
       run: pnpm run --if-present lint
       shell: bash
 
     - name: Run unit tests
+      if: inputs.skip-test == false
       run: pnpm run --if-present test
       shell: bash
 
     - name: Check types
+      if: inputs.skip-typecheck == false
       run: pnpm run --if-present typecheck 
       shell: bash
 
     - name: Build
+      if: inputs.skip-build == false
       run: pnpm run --if-present build 
       shell: bash
 
     - name: Package
+      if: inputs.skip-pack == false
       run: pnpm pack
       shell: bash
 
