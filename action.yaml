@@ -1,0 +1,115 @@
+name: pnpm ci
+description: Continuous integration workflow for building EcmaScript based projects using pnpm
+branding:
+  color: green
+  icon: package
+
+inputs:
+  always-auth:
+    default: 'false'
+    description: See "always-auth" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  architecture:
+    description: See "architecture" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  cache:
+    default: pnpm
+    description: See "cache" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  cache-dependency-path:
+    default: pnpm-lock.yaml
+    description: See "cache-dependency-path" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  check-latest:
+    default: 'true'
+    description: See "check-latest" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  registry-url:
+    default: https://npm.pkg.github.com/
+    description: See "registry-url" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  scope:
+    description: See "scope" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  node-version:
+    description: See "node-version" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  node-version-file:
+    description: See "node-version-file" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+  packages-token:
+    description: Used as the NODE_AUTH_TOKEN environment variable when installing dependencies
+    required: false
+
+  pnpm-version:
+    description: See "version" input documentation at https://github.com/pnpm/action-setup/tree/v4.0.0?tab=readme-ov-file#version
+    required: false
+
+  token:
+    description: See "token" input documentation at https://github.com/actions/setup-node/tree/v4.0.3?tab=readme-ov-file#usage
+    required: false
+
+runs:
+  steps:
+    - uses: actions/checkout@v4.1.7
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ inputs.pnpm-version }}
+
+    - name: Use Node.js ${{ inputs.node-version }}
+      # See https://github.com/actions/setup-node
+      uses: actions/setup-node@v4.0.3
+      with:
+        always-auth: ${{ inputs.always-auth }}
+        architecture: ${{ inputs.architecture }}
+        cache: ${{ inputs.cache }}
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+        check-latest: ${{ inputs.check-latest}}
+        node-version: ${{ inputs.node-version }}
+        node-version-file: ${{ inputs.node-version-file }}
+        registry-url: ${{ inputs.registry-url }}
+        scope: ${{ inputs.scope }}
+        token: ${{ inputs.token }}
+
+    - name: Install dependencies
+      env:
+        NODE_AUTH_TOKEN: ${{ inputs.packages-token }}
+      run: pnpm install --frozen-lockfile --no-optional
+      shell: bash
+
+    - name: Check formatting
+      run: pnpm run --if-present format:check 
+      shell: bash
+
+    - name: Lint
+      run: pnpm run --if-present lint
+      shell: bash
+
+    - name: Run unit tests
+      run: pnpm run --if-present test
+      shell: bash
+
+    - name: Check types
+      run: pnpm run --if-present typecheck 
+      shell: bash
+
+    - name: Build
+      run: pnpm run --if-present build 
+      shell: bash
+
+    - name: Package
+      run: pnpm pack
+      shell: bash
+
+  using: composite
