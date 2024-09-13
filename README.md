@@ -41,7 +41,7 @@ A [GitHub Action](https://docs.github.com/en/actions) that contains steps for bu
        runs-on: ubuntu-latest
        steps:
          - uses: actions/checkout@v4
-         - uses: esxl/pnpm-ci@v0.3.0
+         - uses: esxl/pnpm-ci@v0.4.0
    ```
 
 ## Configure
