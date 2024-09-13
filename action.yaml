@@ -91,7 +91,7 @@ inputs:
 runs:
   steps:
     - name: Install pnpm
-      uses: pnpm/action-setup@v4
+      uses: pnpm/action-setup@v4.0.0
       with:
         version: ${{ inputs.pnpm-version }}
 
