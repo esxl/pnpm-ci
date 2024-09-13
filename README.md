@@ -40,7 +40,7 @@ A [GitHub Action](https://docs.github.com/en/actions) that contains steps for bu
      build:
        runs-on: ubuntu-latest
        steps:
-         - uses: esxl/pnpm-ci@v0.2.0
+         - uses: esxl/pnpm-ci@v0.3.0
    ```
 
 ## Configure
